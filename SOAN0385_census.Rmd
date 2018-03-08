@@ -5,20 +5,6 @@ date: March 8, 2018
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-
-```{r}
-plot(cars)
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
-
 ```{r}
 library(tidyverse)
 ```
@@ -39,18 +25,25 @@ Here are the basic steps to getting data from Social Explorer:
 3. Click on "My Projects" and then "Create" a report (not a map)
 4. Click on the source you want data from (**in our case, use ACS 2016 (5-year estimates)**)
 5. Choose your geography (**in our case, choose "County," then "all counties"**)
-6. 
+6. Choose the tables you want (**in our case, choose "T37: Unemployment Rate for Civilian Population in Labor Force 16 Years and Over", "T53: Employment Sector for Employed Civilian Population 16 Years and Over", and "T130: Residence 1 Year Ago in the United States"**)
+7. Check what you got by clicking **"Show Results"**
+8. If it looks right, go to **"Data Download"** on the top
+9. Leave all the boxes unchecked and download the **CSV and and the "Data dictionary (text file)"** - note where you downloaded them too.
 
-Once you've downloaded the data and codebook, you'll need to move them into your project directory. The following code will work for those of you with access to the bash shell, but you'll need to change the filename to match. Look at the beginning of your codebook (the .txt file) and put that where the code below says "REPLACE" - for example, my file is "R11610185.txt" so I would have `mv ~/Downloads/R11610185*` in my code below. The code also assumes that you've placed the project directory on your desktop.
+Once you've downloaded the data and codebook, you'll need to move them into your project directory. The following code will work for those of you with access to the bash shell, but you'll need to change the filename to match. Look at the beginning of your codebook (the .txt file) and put that where the code below says "REPLACE" - for example, my file is "R11617995.txt" so I would have `file_string=R11617995` in my code below. The code also assumes that you've placed the project directory on your desktop.
 
 ```{bash}
-mv ~/Downloads/R11615810* ~/Desktop/SOAN0385_census
+file_string=R11617995 # REPLACE here
+
+mv ~/Downloads/$file_string* ~/Desktop/SOAN0385_census
 ```
 
-Now we can load the data into R. We'll be using `read_csv()`, which is just a faster version of `read.csv()` and is included in the tidyverse package.
+Now we can load the data into R. We'll be using `read_csv()`, which is just a faster version of `read.csv()` and is included in the tidyverse package. You'll need to replace the file_string like you did above in the code below.
+
 
 ```{r}
-acs <- read_csv("R11615810_SL050.csv")
+file_string = "R11617995" # REPLACE here as needed
+acs <- read_csv(paste(file_string, "_SL050.csv", sep = ""))
 
 glimpse(acs)
 ```
@@ -66,8 +59,10 @@ glimpse(acs_trim)
 Ah! Much better - but we still have a lot of variables with hard-to-decipher names. This is why we made sure to download the codebook! Let's open it and have a look. 
 
 ```{r}
-file.edit("R11615810.txt")
+file.edit(paste(file_string, ".txt", sep = ""))
 ```
+
+We can create a vector of more usable column names and apply those to our dataset - this part takes a little time, but makes your dataset **much** easier to work with, and your code easier to understand.
 
 ```{r}
 columns <- c("fips",
@@ -81,34 +76,21 @@ columns <- c("fips",
              "logical_record",
              "state_fips",
              "county_fips",
-             "households",
-             "hh_white",
-             "hh_black",
-             "hh_amer_indian",
-             "hh_asian",
-             "hh_pacific_islander",
-             "hh_other_race",
-             "hh_two_or_more_races",
-             "hh_hispanic_latino",
-             "hh_white_NOT_hispanic_latino",
-             "renters",
-             "renter_white",
-             "renter_black",
-             "renter_amer_indian",
-             "renter_asian",
-             "renter_pacific_islander",
-             "renter_other_race",
-             "renter_two_or_more_races",
-             "renter_white_NOT_hispanic_latino",
-             "renter_hispanic_latino",
-             "workers_NOT_at_home",
-             "less_than_10_to_work",
-             "btwn_10_19_to_work",
-             "btwn_20_29_to_work",
-             "btwn_30_39_to_work",
-             "btwn_40_59_to_work",
-             "btwn_60_89_to_work",
-             "greater_than_90_to_work")
+             "labor_force",
+             "labor_force_employed",
+             "labor_force_unemployed",
+             "employed",
+             "employed_private_sector",
+             "employed_public_sector",
+             "employed_self_employed",
+             "employed_private_non_profit",
+             "employed_unpaid_family_workers",
+             "population_over_one_year_old",
+             "same_house_one_year_ago",
+             "moved_within_county",
+             "moved_diff_county_within_state",
+             "moved_diff_state",
+             "moved_from_abroad")
 
 colnames(acs_trim) <- columns
 
@@ -117,18 +99,36 @@ glimpse(acs_trim)
 
 Ah! Something we can work with!
 
-```{r}
-acs_trim <- acs_trim %>% mutate(prop_renters = renters/households, short_trip = less_than_10_to_work + btwn_10_19_to_work, med_trip = btwn_20_29_to_work + btwn_30_39_to_work, long_trip = btwn_40_59_to_work + btwn_60_89_to_work + greater_than_90_to_work)
 
-acs_trim <- acs_trim
-glimpse(acs_trim)
+Now we can do a quick plot of our data we're interested in! Our independent variable is how many workers were in the private sector, and our dependent is the unemployment rate. Let's take a look at that.
+
+```{r}
+ggplot(acs_trim, aes(employed_private_sector/employed, labor_force_unemployed/labor_force)) + geom_point() + geom_smooth(method = "lm")
 ```
 
+Hm. There doesn't seem to be much of a relationship. It would be great if we could make one visual comparing the relationships between all the sectors and the unemployment rate, but that would be difficult to do with the data in the state it's currently in. We need to clean the data up a bit more using the `gather()` and `mutate()` functions to make it even easier to work with. We'll clean up all the data while we're at.
+
 ```{r}
-acs_tidy <- acs_trim %>% 
-  gather(length_of_trip, number_of_workers, 41:43) %>%
-  mutate(prop_of_workers = number_of_workers/workers_NOT_at_home)
+acs_tidy <- acs_trim %>%
+  gather(moved_or_not, population, c("same_house_one_year_ago", "moved_within_county", "moved_diff_county_within_state", "moved_diff_state", "moved_from_abroad")) %>%
+  mutate(prop_of_moved = population/population_over_one_year_old) %>%
+  gather(sector, workers, c("employed_private_sector", "employed_public_sector", "employed_self_employed", "employed_private_non_profit", "employed_unpaid_family_workers")) %>%
+  mutate(prop_workers = workers/employed) %>%
+  mutate(unemployment_rate = labor_force_unemployed/labor_force)
 
 glimpse(acs_tidy)
 ```
 
+Now we can make one graph, with all the different sectors and the unemployment rate. 
+
+```{r}
+acs_tidy %>% ggplot(aes(prop_workers, unemployment_rate, color = sector)) + geom_point(alpha = 0.3, size = 0.5) + geom_smooth(method = "lm")
+```
+
+Wow. That's really unpleasant to try and read. We can use the `facet_grid()` function of ggplot2 to make this a bit easier. 
+
+```{r}
+acs_tidy %>% ggplot(aes(prop_workers, unemployment_rate)) + geom_point(alpha = 0.1, size = 0.5) + geom_smooth(method = "lm") + facet_grid(sector ~ .)
+```
+
+There we are! What are your thoughts?
