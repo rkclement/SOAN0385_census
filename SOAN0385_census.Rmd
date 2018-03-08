@@ -1,0 +1,134 @@
+---
+title: "US Census Data - Finding, Downloading, and Loading in R"
+author: Ryan Clement
+date: March 8, 2018
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+library(tidyverse)
+```
+
+In this lesson, we will cover how to find and download US Census data from [Social Explorer](http://go.middlebury.edu/socialexplorer), and how to load and start working with this data in R. 
+
+When you go to Social Explorer, you should see the following image in the upper-right of the page:
+
+
+![](~/Desktop/SOAN0385_census/images/socialexplorer_license.png)
+
+If you use the go/ link, [go/socialexplorer/](http://go.middlebury.edu/socialexplorer), you'll always get to the license provided by Middlebury.
+
+Here are the basic steps to getting data from Social Explorer:
+
+1. Click in the upper-corner to "Sign up"
+2. Create an account using your Midd email
+3. Click on "My Projects" and then "Create" a report (not a map)
+4. Click on the source you want data from (**in our case, use ACS 2016 (5-year estimates)**)
+5. Choose your geography (**in our case, choose "County," then "all counties"**)
+6. 
+
+Once you've downloaded the data and codebook, you'll need to move them into your project directory. The following code will work for those of you with access to the bash shell, but you'll need to change the filename to match. Look at the beginning of your codebook (the .txt file) and put that where the code below says "REPLACE" - for example, my file is "R11610185.txt" so I would have `mv ~/Downloads/R11610185*` in my code below. The code also assumes that you've placed the project directory on your desktop.
+
+```{bash}
+mv ~/Downloads/R11615810* ~/Desktop/SOAN0385_census
+```
+
+Now we can load the data into R. We'll be using `read_csv()`, which is just a faster version of `read.csv()` and is included in the tidyverse package.
+
+```{r}
+acs <- read_csv("R11615810_SL050.csv")
+
+glimpse(acs)
+```
+
+As you can see from looking at the variables, we've got a number of variables who are **all** NAs. These are unused columns for different types of geographies. It would be great to get rid of these. The following code will do that, by turning each value into a logical value (based on the `is.na()` result), then going column by column (this is the `2` value in `apply()`) and seeing which columns are ALL NAs, and then only keeping the columns which are NOT all NAs.
+
+```{r}
+acs_trim <- acs[, !apply(is.na(acs), 2, all)]
+
+glimpse(acs_trim)
+```
+
+Ah! Much better - but we still have a lot of variables with hard-to-decipher names. This is why we made sure to download the codebook! Let's open it and have a look. 
+
+```{r}
+file.edit("R11615810.txt")
+```
+
+```{r}
+columns <- c("fips",
+             "geo_id",
+             "geo_name",
+             "geoqual_name",
+             "state",
+             "summary_level",
+             "geo_component",
+             "file_id",
+             "logical_record",
+             "state_fips",
+             "county_fips",
+             "households",
+             "hh_white",
+             "hh_black",
+             "hh_amer_indian",
+             "hh_asian",
+             "hh_pacific_islander",
+             "hh_other_race",
+             "hh_two_or_more_races",
+             "hh_hispanic_latino",
+             "hh_white_NOT_hispanic_latino",
+             "renters",
+             "renter_white",
+             "renter_black",
+             "renter_amer_indian",
+             "renter_asian",
+             "renter_pacific_islander",
+             "renter_other_race",
+             "renter_two_or_more_races",
+             "renter_white_NOT_hispanic_latino",
+             "renter_hispanic_latino",
+             "workers_NOT_at_home",
+             "less_than_10_to_work",
+             "btwn_10_19_to_work",
+             "btwn_20_29_to_work",
+             "btwn_30_39_to_work",
+             "btwn_40_59_to_work",
+             "btwn_60_89_to_work",
+             "greater_than_90_to_work")
+
+colnames(acs_trim) <- columns
+
+glimpse(acs_trim)
+```
+
+Ah! Something we can work with!
+
+```{r}
+acs_trim <- acs_trim %>% mutate(prop_renters = renters/households, short_trip = less_than_10_to_work + btwn_10_19_to_work, med_trip = btwn_20_29_to_work + btwn_30_39_to_work, long_trip = btwn_40_59_to_work + btwn_60_89_to_work + greater_than_90_to_work)
+
+acs_trim <- acs_trim
+glimpse(acs_trim)
+```
+
+```{r}
+acs_tidy <- acs_trim %>% 
+  gather(length_of_trip, number_of_workers, 41:43) %>%
+  mutate(prop_of_workers = number_of_workers/workers_NOT_at_home)
+
+glimpse(acs_tidy)
+```
+
