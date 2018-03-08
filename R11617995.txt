@@ -1,0 +1,155 @@
+--------------------------------------------------------------------------------
+Codebook for Social Explorer report ID: R11617995
+--------------------------------------------------------------------------------
+
+Contents
+    - Table Summary
+    - Data Dictionary
+    - Citation and Use
+
+
+--------------------------------------------------------------------------------
+Table Summary
+--------------------------------------------------------------------------------
+ 
+Survey:           ACS 2016 (5-Year Estimates)
+Dataset:          Social Explorer Tables:  ACS 2016 (5-Year Estimates)
+Tables:
+
+      1. Unemployment Rate for Civilian Population in Labor Force 16 Years and Over
+         Universe:  Civilian Population in Labor Force 16 Years and Over:
+         Name:      T37
+         Variables:
+            T037_001:   Civilian Population in Labor Force 16 Years and Over:
+            T037_002:      Employed
+            T037_003:      Unemployed
+
+
+      2. Employment Sector for Employed Civilian Population 16 Years and Over
+         Universe:  Total Employed Civilian Population 16 Years and Over
+         Name:      T53
+         Variables:
+            T053_001:   Employed Civilian Population 16 Years and Over:
+            T053_002:      Private Sector
+            T053_003:      Public Sector
+            T053_004:      Self-Employed (Incorporated and Not Incorporated)
+            T053_005:      Private Non-Profit
+            T053_006:      Unpaid Family Workers
+
+
+      3. Residence 1 Year Ago in the United States
+         Universe:  Population 1 year and Over in the United States
+         Name:      T130
+         Variables:
+            T130_001:   Total:
+            T130_002:      Same House 1 Year Ago
+            T130_003:      Moved Within Same County
+            T130_004:      Moved From Different County Within Same State
+            T130_005:      Moved From Different State
+            T130_006:      Moved From Abroad
+
+
+
+
+
+ 
+ 
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Variables 
+      FIPS:           FIPS
+      GEOID:          Geographic Identifier
+      NAME:           Name of Area
+      QName:          Qualifying Name
+      STUSAB:         State/U.S.-Abbreviation (USPS)
+      SUMLEV:         Summary Level
+      GEOCOMP:        Geographic Component
+      FILEID:         File Identification
+      LOGRECNO:       Logical Record Number
+      US:             US
+      REGION:         Region
+      DIVISION:       Division
+      STATECE:        State (Census Code)
+      STATE:          State (FIPS)
+      COUNTY:         County
+      COUSUB:         County Subdivision (FIPS)
+      PLACE:          Place (FIPS Code)
+      PLACESE:        Place (State FIPS + Place FIPS)
+      TRACT:          Census Tract
+      BLKGRP:         Block Group
+      CONCIT:         Consolidated City
+      AIANHH:         American Indian Area/Alaska Native Area/Hawaiian Home Land (Census)
+      AIANHHFP:       American Indian Area/Alaska Native Area/Hawaiian Home Land (FIPS)
+      AIHHTLI:        American Indian Trust Land/Hawaiian Home Land Indicator
+      AITSCE:         American Indian Tribal Subdivision (Census)
+      AITS:           American Indian Tribal Subdivision (FIPS)
+      ANRC:           Alaska Native Regional Corporation (FIPS)
+      CBSA:           Metropolitan and Micropolitan Statistical Area
+      CSA:            Combined Statistical Area
+      METDIV:         Metropolitan Division
+      MACC:           Metropolitan Area Central City
+      MEMI:           Metropolitan/Micropolitan Indicator Flag
+      NECTA:          New England City and Town Combined Statistical Area
+      CNECTA:         New England City and Town Area
+      NECTADIV:       New England City and Town Area Division
+      UA:             Urban Area
+      UACP:           Urban Area Central Place
+      CDCURR:         Current Congressional District ***
+      SLDU:           State Legislative District Upper
+      SLDL:           State Legislative District Lower
+      VTD:            Voting District
+      ZCTA3:          ZIP Code Tabulation Area (3-digit)
+      ZCTA5:          ZIP Code Tabulation Area (5-digit)
+      SUBMCD:         Subbarrio (FIPS)
+      SDELM:          School District (Elementary)
+      SDSEC:          School District (Secondary)
+      SDUNI:          School District (Unified)
+      UR:             Urban/Rural
+      PCI:            Principal City Indicator
+      TAZ:            Traffic Analysis Zone
+      UGA:            Urban Growth Area
+      BTTR:           Tribal Tract
+      BTBG:           Tribal Block Group
+      PUMA5:          Public Use Microdata Area - 5% File
+      PUMA1:          Public Use Microdata Area - 1% File
+      T037_001:       Civilian Population in Labor Force 16 Years and Over:
+      T037_002:       Civilian Population in Labor Force 16 Years and Over: Employed
+      T037_003:       Civilian Population in Labor Force 16 Years and Over: Unemployed
+      T053_001:       Employed Civilian Population 16 Years and Over:
+      T053_002:       Employed Civilian Population 16 Years and Over: Private Sector
+      T053_003:       Employed Civilian Population 16 Years and Over: Public Sector
+      T053_004:       Employed Civilian Population 16 Years and Over: Self-Employed (Incorporated and Not Incorporated)
+      T053_005:       Employed Civilian Population 16 Years and Over: Private Non-Profit
+      T053_006:       Employed Civilian Population 16 Years and Over: Unpaid Family Workers
+      T130_001:       Total:
+      T130_002:       Total: Same House 1 Year Ago
+      T130_003:       Total: Moved Within Same County
+      T130_004:       Total: Moved From Different County Within Same State
+      T130_005:       Total: Moved From Different State
+      T130_006:       Total: Moved From Abroad
+
+
+
+
+--------------------------------------------------------------------------------
+Citation and Use of Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* Publications and research reports employing the data
+  must cite it appropriately. The citation should include the following:
+
+	  www.socialexplorer.com
+	  New York City, NY: Social Explorer 2018
+
+
+* Citations should also include the URL for this report:
+
+    http://www.socialexplorer.com/pub/reportdata/HtmlResults.aspx?reportid=R11617995
+
+If you have any questions contact info@socialexplorer.com
